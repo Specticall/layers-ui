@@ -203,4 +203,4 @@ export default {
 };
 `;
 
-export default Popover;
+export default Popover

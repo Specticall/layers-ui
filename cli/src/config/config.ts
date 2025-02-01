@@ -1,1 +1,1 @@
-export const REGISTRY_URL = "http://localhost:8000";
+export const REGISTRY_URL = "https://layers-ui-registry.vercel.app/";

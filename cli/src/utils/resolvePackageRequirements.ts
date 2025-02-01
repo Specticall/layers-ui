@@ -10,10 +10,12 @@ const list = {
       const mainFilePath = path.resolve(process.cwd(), "./src/main.tsx");
       const mainFile = await fs.readFile(mainFilePath, "utf-8");
 
-      await fs.writeFile(
-        mainFilePath,
-        `${REACT_LOADING_SKELETON_CSS_IMPORT}\n${mainFile}`
-      );
+      if (!mainFile.includes("react-loading-skeleton/dist/skeleton.css")) {
+        await fs.writeFile(
+          mainFilePath,
+          `${REACT_LOADING_SKELETON_CSS_IMPORT}\n${mainFile}`
+        );
+      }
     }
     // TODO : Implement for cra and next
   },
