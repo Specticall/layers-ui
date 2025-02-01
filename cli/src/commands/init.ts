@@ -8,6 +8,9 @@ import path from "path";
 import chalk from "chalk";
 import { fileExists } from "../utils/writeFile.js";
 import { cnFile } from "../config/cn.js";
+import { installPackage } from "../utils/installPackage.js";
+import ora from "ora";
+import { checkRepoConfig } from "../utils/checkRepoConfig.js";
 
 const DEFAULT_COMPONENTS_PATH = "/src/components/ui";
 const DEFAULT_UTILS_PATH = "/src/utils";
@@ -24,6 +27,8 @@ const initInputSchema = z.object({
   utilsName: z.string(),
   buildTool: z.enum(["vite", "cra", "next"]),
 });
+
+export type BuildTool = z.infer<typeof initInputSchema>["buildTool"];
 
 async function initCommand() {
   try {
@@ -74,13 +79,21 @@ async function initCommand() {
     const configJSON = JSON.stringify(config, null, "\t");
     await fs.writeFile(path.resolve(cwd, "./components.json"), configJSON);
 
+    const canProceed = await checkRepoConfig(config.using);
+    if (!canProceed) {
+      logger.info(
+        "Terminating operation, please follow the installation guide before running the init command again: https://github.com/Specticall/layers-ui"
+      );
+      return;
+    }
+
     // Create path for components
     const resolvedComponentPath = path.resolve(
       cwd,
       `.${config.path.components}`
     );
-    if (!fs.stat(resolvedComponentPath)) {
-      fs.mkdir(resolvedComponentPath);
+    if (!(await fileExists(resolvedComponentPath))) {
+      fs.mkdir(resolvedComponentPath, { recursive: true });
     }
 
     // Create utils file
@@ -106,6 +119,14 @@ async function initCommand() {
       fs.mkdir(utilsFolderPath, { recursive: true });
       await fs.writeFile(utilsFilePath, cnFile);
     }
+
+    // Install packages
+    const spinner = ora("Installing packages").start();
+    await installPackage({
+      devDependencies: ["tailwind-merge", "clsx"],
+      dependencies: [],
+    });
+    spinner.stop();
 
     logger.success("Successfuly initialized project.");
   } catch (err) {
