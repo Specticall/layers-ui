@@ -1,0 +1,7 @@
+{
+  "path": {
+    "components": "/src/components/ui-test",
+    "utils": "/src/utils/lib"
+  },
+  "using": "vite"
+}

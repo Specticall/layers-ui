@@ -1,0 +1,20 @@
+{
+  "name": "layers",
+  "version": "1.0.0",
+  "main": "index.js",
+  "description": "",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "update:registry": "tsx ./scripts/insertIntoRegistry.ts"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "tsx": "^4.19.2"
+  },
+  "devDependencies": {
+    "@types/node": "^22.12.0"
+  }
+}
